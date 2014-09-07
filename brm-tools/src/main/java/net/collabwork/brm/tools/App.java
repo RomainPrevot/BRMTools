@@ -1,6 +1,13 @@
 package net.collabwork.brm.tools;
 
+import java.awt.EventQueue;
+
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
+
 import net.collabwork.brm.tools.config.AppConfig;
+import net.collabwork.brm.tools.ui.SplashScreen;
+import net.collabwork.brm.tools.ui.TestDialog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,18 +21,38 @@ import org.springframework.stereotype.Component;
 @Component
 public class App {
 
-	@Autowired
-	private AppService appService;
+    @Autowired
+    private AppService appService;
 
-	public void launch() {
-		System.out.println(appService.sayHello());
-	}
+    @Autowired
+    private PunchService punchService;
 
-	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(
-				AppConfig.class);
+    public void launch() {
+        try {
+            TestDialog dialog = new TestDialog();
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-		App app = ctx.getBean(App.class);
-		app.launch();
-	}
+            SplashScreen.display(false);
+
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+
+                SplashScreen.display(true);
+
+                ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+
+                App app = ctx.getBean(App.class);
+                app.launch();
+            }
+        });
+
+    }
 }
