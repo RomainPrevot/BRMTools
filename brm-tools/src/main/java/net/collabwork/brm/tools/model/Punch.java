@@ -1,12 +1,13 @@
 package net.collabwork.brm.tools.model;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Punch implements Comparable<Punch> {
+public class Punch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,11 +16,17 @@ public class Punch implements Comparable<Punch> {
     private String name;
 
     private long size;
+    
+    @Embedded
+	private PunchQuantity punchQuantity;
 
     public Punch() {
+		punchQuantity = new PunchQuantity();
+		punchQuantity.setQuantity(1);
     }
 
     public Punch(Long id, String name, long size) {
+		this();
         this.id = id;
         this.name = name;
         this.size = size;
@@ -49,7 +56,19 @@ public class Punch implements Comparable<Punch> {
         this.size = size;
     }
 
-    @Override
+    public PunchQuantity getPunchQuantity() {
+		return punchQuantity;
+	}
+
+	public void setPunchQuantity(PunchQuantity punchQuantity) {
+		this.punchQuantity = punchQuantity;
+	}
+
+	public Integer getQuantity() {
+		return punchQuantity.getQuantity();
+	}
+
+	@Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Punch [");
@@ -105,16 +124,4 @@ public class Punch implements Comparable<Punch> {
         return true;
     }
 
-    public int compareTo(Punch o) {
-        // ordering from smaller to bigger
-        int comparison = 0;
-        
-        if (getSize() < o.getSize()) {
-            comparison = -1;
-        } else if (getSize() > o.getSize()) {
-            comparison = 1;
-        }
-
-        return comparison;
-    }
 }

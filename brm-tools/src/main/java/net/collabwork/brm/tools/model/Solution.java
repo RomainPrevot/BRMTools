@@ -1,11 +1,7 @@
 package net.collabwork.brm.tools.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ComputationException;
 
 /**
  * Not an entity
@@ -14,49 +10,88 @@ import com.google.common.collect.ComputationException;
  * 
  */
 public class Solution {
+	private Long objective;
 
-    private List<CompositionPunch> compositionPunches = new ArrayList<CompositionPunch>();
+	private Map<Punch, Integer> punches;
 
-    public Solution() {
-        super();
-    }
+	public Solution() {
+		punches = new HashMap<Punch, Integer>();
+	}
 
-    public void add(Punch punch) {
-        CompositionPunch compPunch = getCompositionPunchFor(punch);
-        if (compPunch == null) {
-            compPunch = new CompositionPunch(1, punch);
-        } else {
-            compPunch.addPunch(punch);
-        }
-        compositionPunches.add(compPunch);
-    }
+	public Long getObjective() {
+		return objective;
+	}
 
-    public int size() {
-        return compositionPunches.size();
-    }
+	public void setObjective(Long objective) {
+		this.objective = objective;
+	}
 
-    public List<CompositionPunch> getCompositionPunches() {
-        return compositionPunches;
-    }
+	public Map<Punch, Integer> getPunches() {
+		return punches;
+	}
 
-    public List<Punch> getPunches() {
-        List<Punch> punches = new ArrayList<Punch>();
-        for (CompositionPunch cp : compositionPunches) {
-            Punch punch = cp.getPunch();
-            if (!punches.contains(punch)) {
-                punches.add(punch);
-            }
-        }
-        return punches;
-    }
+	public void setPunches(Map<Punch, Integer> punches) {
+		this.punches = punches;
+	}
 
-    private CompositionPunch getCompositionPunchFor(Punch punch) {
-        for (CompositionPunch compPunch : compositionPunches) {
-            if (compPunch.getPunch().equals(punch)) {
-                return compPunch;
-            }
-        }
+	public void add(Punch punch) {
+		if (!punches.containsKey(punch)) {
+			punches.put(punch, 0);
+		}
+		Integer oldQty = punches.get(punch);
+		punches.put(punch, oldQty + 1);
+	}
 
-        return null;
-    }
+	public boolean isPartial() {
+		if (objective == null) {
+			return false;
+		}
+		Long total = 0L;
+		for (Punch p : punches.keySet()) {
+			total += p.getSize() * punches.get(p);
+		}
+		return objective != total;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((punches == null) ? 0 : punches.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Solution)) {
+			return false;
+		}
+		Solution other = (Solution) obj;
+		if (punches == null) {
+			if (other.punches != null) {
+				return false;
+			}
+		} else if (!punches.equals(other.punches)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Solution [");
+		for (Punch p : punches.keySet()) {
+			builder.append(punches.get(p)).append("x").append(p.getName()).append(", ");
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

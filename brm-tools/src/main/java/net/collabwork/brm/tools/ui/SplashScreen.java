@@ -1,49 +1,51 @@
 package net.collabwork.brm.tools.ui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JDialog;
-import java.awt.Dialog.ModalityType;
-import java.awt.Dialog.ModalExclusionType;
-import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class SplashScreen extends JDialog {
+	private static final Log LOG = LogFactory.getLog(SplashScreen.class);
 
-    private static SplashScreen splashScreen;
+	private static SplashScreen splashScreen;
 
-    public static void display(final boolean display) {
+	public static void display(final boolean display) {
 
-        EventQueue.invokeLater(new Runnable() {
+		if (splashScreen == null) {
+			splashScreen = new SplashScreen();
+		}
+		splashScreen.setLocationRelativeTo(null);
+		LOG.debug("Setting splashscreen visibility to " + display);
 
-            public void run() {
-                if (splashScreen == null) {
-                    splashScreen = new SplashScreen();
-                }
-                splashScreen.setLocationRelativeTo(null);
-                System.out.println("settign splashScreen visible: " + display);
-                splashScreen.setVisible(display);
-            }
-        });
+		splashScreen.setVisible(display);
+		if (!display) {
+			splashScreen.dispose();
+		}
+	}
 
-    }
+	/**
+	 * Create the dialog.
+	 */
+	public SplashScreen() {
+		setAlwaysOnTop(true);
+		setModal(true);
+		getContentPane().setBackground(Color.LIGHT_GRAY);
+		getContentPane().setForeground(Color.BLACK);
+		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		setModalityType(ModalityType.MODELESS);
+		setUndecorated(true);
+		setResizable(false);
+		setSize(200, 200);
 
-    /**
-     * Create the dialog.
-     */
-    public SplashScreen() {
-        setAlwaysOnTop(true);
-        setModal(true);
-        getContentPane().setBackground(Color.LIGHT_GRAY);
-        setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-        setModalityType(ModalityType.APPLICATION_MODAL);
-        setUndecorated(true);
-        setResizable(false);
-        setBounds(100, 100, 200, 120);
+		JLabel lblLoading = new JLabel("Loading...");
+		getContentPane().add(lblLoading, BorderLayout.CENTER);
 
-        JLabel lblLoading = new JLabel("Loading...");
-        getContentPane().add(lblLoading, BorderLayout.CENTER);
-    }
+		pack();
+	}
 
 }
