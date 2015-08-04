@@ -1,10 +1,8 @@
-package net.collabwork.brm.tools;
+package net.collabwork.brm.tools.views;
 
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Solution;
 
 public interface MainView {
-
-	void setPresenter(MainPresenter presenter);
 
 	void setVisible(boolean visible);
 

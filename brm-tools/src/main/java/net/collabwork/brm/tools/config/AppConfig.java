@@ -20,7 +20,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 @Configuration
 @ComponentScan({ "net.collabwork.brm.tools" })
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories("net.collabwork.brm.tools.dao")
+@EnableJpaRepositories("net.collabwork.brm.tools.core.dao")
 public class AppConfig {
 
     private static final String PROP_DATABASE_DRIVER = "db.driver";
@@ -74,7 +74,6 @@ public class AppConfig {
         jpaProterties.put(PROP_HIBERNATE_NAMING_STRAT, environment.getRequiredProperty(PROP_HIBERNATE_NAMING_STRAT));
         jpaProterties.put(PROP_HIBERNATE_SHOW_SQL, environment.getRequiredProperty(PROP_HIBERNATE_SHOW_SQL));
         jpaProterties.put(PROP_SCHEMA_GENERATION, environment.getRequiredProperty(PROP_SCHEMA_GENERATION));
-
         entityManagerFactoryBean.setJpaProperties(jpaProterties);
 
         return entityManagerFactoryBean;

@@ -1,8 +1,11 @@
-package net.collabwork.brm.tools;
+package net.collabwork.brm.tools.models;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MainModelImpl implements MainModel {
 
 	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);

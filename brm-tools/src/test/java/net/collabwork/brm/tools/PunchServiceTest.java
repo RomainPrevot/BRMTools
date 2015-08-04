@@ -5,8 +5,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 import net.collabwork.brm.tools.config.AppConfig;
-import net.collabwork.brm.tools.dao.PunchDAO;
-import net.collabwork.brm.tools.model.Punch;
+import net.collabwork.brm.tools.core.dao.PunchDAO;
+import net.collabwork.brm.tools.core.model.Punch;
 
 import org.junit.Test;
 import org.mockito.Mockito;

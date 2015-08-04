@@ -1,9 +1,8 @@
 package net.collabwork.brm.tools.core;
 
 import junit.framework.Assert;
-import net.collabwork.brm.tools.core.Solver;
-import net.collabwork.brm.tools.model.Punch;
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Punch;
+import net.collabwork.brm.tools.core.model.Solution;
 
 import org.junit.Test;
 

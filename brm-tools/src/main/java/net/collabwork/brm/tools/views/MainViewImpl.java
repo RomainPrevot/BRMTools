@@ -1,22 +1,33 @@
-package net.collabwork.brm.tools;
+package net.collabwork.brm.tools.views;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Solution;
+import net.collabwork.brm.tools.presenters.MainPresenter;
 import net.collabwork.brm.tools.ui.SolutionPanel;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class MainViewImpl extends JFrame implements MainView {
 
+	@Autowired
 	private MainPresenter presenter;
+
 	private SolutionPanel solutionPanel;
 
 	public MainViewImpl() {
@@ -33,18 +44,27 @@ public class MainViewImpl extends JFrame implements MainView {
 		JLabel label = new JLabel("Hello world");
 		contentPane.add(label, BorderLayout.NORTH);
 		final JTextField textField = new JTextField();
-		contentPane.add(textField, BorderLayout.SOUTH);
+		JButton button = new JButton("coucou");
+		JPanel toolbar = new JPanel();
+		toolbar.setLayout(new BorderLayout());
+		toolbar.add(textField, BorderLayout.CENTER);
+		toolbar.add(button, BorderLayout.EAST);
+		contentPane.add(toolbar, BorderLayout.SOUTH);
+
+		button.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				presenter.showPunchManagementWindow();
+			}
+		});
+
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				presenter.setTitle(textField.getText());
 			}
 		});
-	}
-
-	@Override
-	public void setPresenter(MainPresenter presenter) {
-		this.presenter = presenter;
 	}
 
 	private void center() {

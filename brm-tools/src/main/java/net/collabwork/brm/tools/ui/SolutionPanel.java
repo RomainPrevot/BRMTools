@@ -10,8 +10,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import net.collabwork.brm.tools.model.Punch;
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Punch;
+import net.collabwork.brm.tools.core.model.Solution;
 
 public class SolutionPanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package net.collabwork.brm.tools;
+package net.collabwork.brm.tools.models;
 
 import java.beans.PropertyChangeListener;
 

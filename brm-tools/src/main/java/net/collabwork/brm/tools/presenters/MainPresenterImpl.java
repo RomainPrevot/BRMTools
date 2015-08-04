@@ -1,22 +1,28 @@
-package net.collabwork.brm.tools;
+package net.collabwork.brm.tools.presenters;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Random;
 
-import net.collabwork.brm.tools.model.Punch;
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Punch;
+import net.collabwork.brm.tools.core.model.Solution;
+import net.collabwork.brm.tools.models.MainModel;
+import net.collabwork.brm.tools.views.MainView;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class MainPresenterImpl implements MainPresenter {
 
+	@Autowired
 	private MainView view;
+
 	private MainModel model;
 
-	@Override
-	public void setView(MainView view) {
-		this.view = view;
-	}
+	@Autowired
+	private PunchManagementPresenter punchPresenter;
 
-	@Override
+	@Autowired
 	public void setModel(MainModel model) {
 		this.model = model;
 		model.addPropertyChangeListener(this);
@@ -71,6 +77,11 @@ public class MainPresenterImpl implements MainPresenter {
 		int randomNum = rand.nextInt((max - min) + 1) + min;
 
 		return randomNum;
+	}
+
+	@Override
+	public void showPunchManagementWindow() {
+		punchPresenter.display(true);
 	}
 
 }

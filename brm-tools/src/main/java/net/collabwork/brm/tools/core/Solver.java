@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.collabwork.brm.tools.model.Punch;
-import net.collabwork.brm.tools.model.Solution;
+import net.collabwork.brm.tools.core.model.Punch;
+import net.collabwork.brm.tools.core.model.Solution;
 
 public class Solver {
 

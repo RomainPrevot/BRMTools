@@ -38,7 +38,7 @@ public class SplashScreen extends JDialog {
 		getContentPane().setForeground(Color.BLACK);
 		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		setModalityType(ModalityType.MODELESS);
-		setUndecorated(true);
+		// setUndecorated(true);
 		setResizable(false);
 		setSize(200, 200);
 

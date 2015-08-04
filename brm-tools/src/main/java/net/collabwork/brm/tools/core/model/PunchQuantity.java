@@ -1,4 +1,4 @@
-package net.collabwork.brm.tools.model;
+package net.collabwork.brm.tools.core.model;
 
 import javax.persistence.Embeddable;
 

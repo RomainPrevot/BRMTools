@@ -2,9 +2,11 @@ package net.collabwork.brm.tools;
 
 import java.awt.EventQueue;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import net.collabwork.brm.tools.config.AppConfig;
+import net.collabwork.brm.tools.presenters.MainPresenter;
 import net.collabwork.brm.tools.ui.SplashScreen;
 
 import org.apache.commons.logging.Log;
@@ -28,16 +30,12 @@ public class App {
 	@Autowired
 	private PunchService punchService;
 
+	@Autowired
+	private MainPresenter presenter;
+
 	public void launch() {
 		try {
 			LOG.debug("launching app...");
-
-			MainView view = new MainViewImpl();
-			MainPresenter presenter = new MainPresenterImpl();
-			MainModel model = new MainModelImpl();
-			presenter.setView(view);
-			presenter.setModel(model);
-			view.setPresenter(presenter);
 
 			presenter.display(true);
 
@@ -61,6 +59,14 @@ public class App {
 				}
 
 				SplashScreen.display(true);
+				Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+					@Override
+					public void uncaughtException(Thread t, Throwable e) {
+						JOptionPane.showMessageDialog(null, "Uncaugh error: " + e.getMessage(), "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
 
 				ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 
