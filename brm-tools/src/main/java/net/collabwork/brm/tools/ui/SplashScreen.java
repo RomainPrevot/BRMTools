@@ -14,7 +14,7 @@ public class SplashScreen extends JDialog {
 
 	private static SplashScreen splashScreen;
 
-	public static void display(final boolean display) {
+	public static synchronized void display(final boolean display) {
 
 		if (splashScreen == null) {
 			splashScreen = new SplashScreen();
@@ -26,6 +26,7 @@ public class SplashScreen extends JDialog {
 		if (!display) {
 			splashScreen.dispose();
 		}
+
 	}
 
 	/**

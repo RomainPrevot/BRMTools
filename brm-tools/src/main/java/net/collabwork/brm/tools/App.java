@@ -65,6 +65,7 @@ public class App {
 					public void uncaughtException(Thread t, Throwable e) {
 						JOptionPane.showMessageDialog(null, "Uncaugh error: " + e.getMessage(), "Error",
 								JOptionPane.ERROR_MESSAGE);
+						LOG.error("uncaught exception", e);
 					}
 				});
 

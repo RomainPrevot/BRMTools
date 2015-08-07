@@ -22,4 +22,8 @@ public class ImageBundle {
 	public static ImageIcon save() {
 		return new ImageIcon(ImageBundle.class.getResource("disk.png"));
 	}
+
+	public static ImageIcon punchManagementIcon() {
+		return new ImageIcon(ImageBundle.class.getResource("cog_go.png"));
+	}
 }
