@@ -28,111 +28,115 @@ import net.collabwork.brm.tools.views.actions.ShowPunchManagementWindowAction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import net.miginfocom.swing.MigLayout;
 
 @Component
 // @DependsOn("showPunchManagementWindowAction")
 public class MainViewImpl extends JFrame implements MainView {
 
-	private MainPresenter presenter;
+    private MainPresenter presenter;
 
-	private ShowPunchManagementWindowAction showPunchManagementWindowAction;
+    private ShowPunchManagementWindowAction showPunchManagementWindowAction;
 
-	private SolutionPanel solutionPanel;
+    private SolutionPanel solutionPanel;
 
-	private DefaultListModel<Solution> historyListModel;
+    private DefaultListModel<Solution> historyListModel;
 
-	public MainViewImpl() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(new Dimension(800, 600));
-		center();
+    public MainViewImpl() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(new Dimension(800, 600));
+        center();
 
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		getContentPane().add(contentPane);
-		contentPane.setLayout(new BorderLayout(5, 5));
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
 
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
+        JMenu computeMenu = new JMenu("Calculs");
+        menuBar.add(computeMenu);
 
-		JMenu computeMenu = new JMenu("Calculs");
-		menuBar.add(computeMenu);
+        JMenuItem newComputation = new JMenuItem("Nouveau");
+        computeMenu.add(newComputation);
+        computeMenu.addSeparator();
+        JMenuItem clearHistory = new JMenuItem("Vider historique");
+        computeMenu.add(clearHistory);
 
-		JMenuItem newComputation = new JMenuItem("Nouveau");
-		computeMenu.add(newComputation);
-		computeMenu.addSeparator();
-		JMenuItem clearHistory = new JMenuItem("Vider historique");
-		computeMenu.add(clearHistory);
+        JMenu punchMgmtMenu = new JMenu("Poinçons");
+        menuBar.add(punchMgmtMenu);
 
-		JMenu punchMgmtMenu = new JMenu("Poinçons");
-		menuBar.add(punchMgmtMenu);
+        showPunchManagementWindowAction = new ShowPunchManagementWindowAction();
+        JMenuItem showPunchMgmt = new JMenuItem(showPunchManagementWindowAction);
+        punchMgmtMenu.add(showPunchMgmt);
 
-		showPunchManagementWindowAction = new ShowPunchManagementWindowAction();
-		JMenuItem showPunchMgmt = new JMenuItem(showPunchManagementWindowAction);
-		punchMgmtMenu.add(showPunchMgmt);
+        historyListModel = new DefaultListModel<>();
+        getContentPane().setLayout(new BorderLayout(0, 0));
 
-		JPanel computePanel = new JPanel();
-		computePanel.setLayout(new BorderLayout());
-		final JTextField txtValue = new JTextField();
-		txtValue.setFont(txtValue.getFont().deriveFont(35));
-		txtValue.setPreferredSize(new Dimension(150, 20));
-		computePanel.add(new JLabel("Calculer:"), BorderLayout.WEST);
-		computePanel.add(txtValue, BorderLayout.CENTER);
-		JButton btnOk = new JButton("ok");
-		btnOk.addActionListener(new AbstractAction() {
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        getContentPane().add(contentPane);
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Long value = Long.valueOf(txtValue.getText());
-				presenter.solveFor(value);
-			}
-		});
-		computePanel.add(btnOk, BorderLayout.EAST);
-		contentPane.add(computePanel, BorderLayout.WEST);
+        JPanel computePanel = new JPanel();
+        computePanel.setLayout(new BorderLayout());
+        final JTextField txtValue = new JTextField();
+        txtValue.setFont(txtValue.getFont().deriveFont(35));
+        txtValue.setPreferredSize(new Dimension(150, 20));
+        computePanel.add(new JLabel("Calculer:"), BorderLayout.WEST);
+        computePanel.add(txtValue, BorderLayout.CENTER);
+        JButton btnOk = new JButton("ok");
+        btnOk.addActionListener(new AbstractAction() {
 
-		solutionPanel = new SolutionPanel();
-		solutionPanel.setPreferredSize(new Dimension(350, 600));
-		contentPane.add(solutionPanel, BorderLayout.EAST);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Long value = Long.valueOf(txtValue.getText());
+                presenter.solveFor(value);
+            }
+        });
+        contentPane.setLayout(new MigLayout("", "[350px][350px]", "[][]"));
+        computePanel.add(btnOk, BorderLayout.EAST);
+        contentPane.add(computePanel, "cell 0 0,grow");
 
-		historyListModel = new DefaultListModel<>();
-		JList<Solution> history = new JList<Solution>(historyListModel);
-		history.setPreferredSize(new Dimension(350, 200));
-		history.addListSelectionListener(new ListSelectionListener() {
+        solutionPanel = new SolutionPanel();
+        solutionPanel.setPreferredSize(new Dimension(350, 600));
+        contentPane.add(solutionPanel, "cell 1 0 1 2,grow");
+        JList<Solution> history = new JList<Solution>(historyListModel);
+        contentPane.add(history, "cell 0 1,growy");
+        history.setPreferredSize(new Dimension(350, 200));
+        history.addListSelectionListener(new ListSelectionListener() {
 
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				Solution solution = null;
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Solution solution = null;
 
-				if (historyListModel.size() > e.getFirstIndex()) {
-					solution = historyListModel.get(e.getFirstIndex());
-				}
-				setSolution(solution);
-			}
-		});
-		computePanel.add(history, BorderLayout.SOUTH);
-	}
+                if (historyListModel.size() > e.getFirstIndex()) {
+                    solution = historyListModel.get(e.getFirstIndex());
+                }
+                setSolution(solution);
+            }
+        });
+    }
 
-	@Autowired
-	public void setPresenter(MainPresenter presenter) {
-		this.presenter = presenter;
-		showPunchManagementWindowAction.setPresenter(presenter);
-	}
+    @Autowired
+    public void setPresenter(MainPresenter presenter) {
+        this.presenter = presenter;
+        showPunchManagementWindowAction.setPresenter(presenter);
+    }
 
-	private void center() {
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-	}
+    private void center() {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+    }
 
-	@Override
-	public void setSolution(Solution solution) {
-		solutionPanel.setSolution(solution);
-	}
+    @Override
+    public void setSolution(Solution solution) {
+        solutionPanel.setSolution(solution);
+    }
 
-	@Override
-	public void setSolutionHistory(List<Solution> solutions) {
-		historyListModel.clear();
-		for (Solution s : solutions) {
-			historyListModel.addElement(s);
-		}
-	}
+    @Override
+    public void setSolutionHistory(List<Solution> solutions) {
+        historyListModel.clear();
+        for (Solution s : solutions) {
+            historyListModel.addElement(s);
+        }
+    }
 
 }
