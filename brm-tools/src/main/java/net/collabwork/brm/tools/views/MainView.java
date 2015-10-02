@@ -14,4 +14,8 @@ public interface MainView {
 
 	void setSolutionHistory(List<Solution> solutions);
 
+	void clearComputeField();
+
+	void focusComputeField();
+
 }

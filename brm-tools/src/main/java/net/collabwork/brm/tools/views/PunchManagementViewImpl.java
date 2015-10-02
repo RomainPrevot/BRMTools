@@ -14,6 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -46,6 +47,8 @@ public class PunchManagementViewImpl extends JDialog implements PunchManagementV
 	private JLabel errorLabel;
 
 	public PunchManagementViewImpl() {
+		setUndecorated(true);
+		getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
 		setTitle("Gestion des poinçons");
 		setPreferredSize(new Dimension(400, 300));
 		setModal(true);

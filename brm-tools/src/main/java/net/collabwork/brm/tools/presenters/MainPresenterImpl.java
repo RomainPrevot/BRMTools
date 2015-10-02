@@ -2,6 +2,8 @@ package net.collabwork.brm.tools.presenters;
 
 import java.beans.PropertyChangeEvent;
 
+import javax.swing.JOptionPane;
+
 import net.collabwork.brm.tools.models.MainModel;
 import net.collabwork.brm.tools.views.MainView;
 
@@ -50,6 +52,17 @@ public class MainPresenterImpl implements MainPresenter {
 	@Override
 	public void solveFor(Long value) {
 		model.solveFor(value);
+	}
+
+	@Override
+	public void showAboutWindow() {
+		JOptionPane.showMessageDialog(null, "Hello World");
+	}
+
+	@Override
+	public void clearAndFocusComputeField() {
+		view.clearComputeField();
+		view.focusComputeField();
 	}
 
 }

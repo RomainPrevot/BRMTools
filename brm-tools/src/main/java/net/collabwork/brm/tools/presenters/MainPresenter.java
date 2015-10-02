@@ -12,4 +12,8 @@ public interface MainPresenter extends PropertyChangeListener {
 
 	void solveFor(Long value);
 
+	void showAboutWindow();
+
+	void clearAndFocusComputeField();
+
 }

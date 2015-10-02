@@ -1,9 +1,7 @@
 package net.collabwork.brm.tools;
 
-import java.awt.EventQueue;
-
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 import net.collabwork.brm.tools.config.AppConfig;
 import net.collabwork.brm.tools.presenters.MainPresenter;
@@ -15,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.alee.laf.WebLookAndFeel;
 
 /**
  * Hello world!
@@ -38,43 +38,38 @@ public class App {
 			LOG.debug("launching app...");
 
 			presenter.display(true);
-
-			SplashScreen.display(false);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
 			@Override
-			public void run() {
-
-				try {
-					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-				} catch (Exception e) {
-					LOG.error("No Windows L&F", e);
-				}
-
-				SplashScreen.display(true);
-				Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
-					@Override
-					public void uncaughtException(Thread t, Throwable e) {
-						JOptionPane.showMessageDialog(null, "Uncaugh error: " + e.getMessage(), "Error",
-								JOptionPane.ERROR_MESSAGE);
-						LOG.error("uncaught exception", e);
-					}
-				});
-
-				ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-
-				App app = ctx.getBean(App.class);
-				app.launch();
+			public void uncaughtException(Thread t, Throwable e) {
+				JOptionPane.showMessageDialog(null, "Uncaugh error: " + e.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
+				LOG.error("uncaught exception", e);
 			}
 		});
 
+		SplashScreen.display(true);
+
+		try {
+			WebLookAndFeel.install();
+			JFrame.setDefaultLookAndFeelDecorated(true);
+			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+			LOG.error("No Windows L&F", e);
+		}
+
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+
+		App app = ctx.getBean(App.class);
+		app.launch();
+
+		SplashScreen.display(false);
 	}
 }

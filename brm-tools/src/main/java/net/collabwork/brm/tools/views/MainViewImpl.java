@@ -2,6 +2,7 @@ package net.collabwork.brm.tools.views;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -17,126 +18,165 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.collabwork.brm.tools.core.model.Solution;
 import net.collabwork.brm.tools.presenters.MainPresenter;
 import net.collabwork.brm.tools.ui.SolutionPanel;
+import net.collabwork.brm.tools.views.actions.NewComputeAction;
+import net.collabwork.brm.tools.views.actions.ShowAboutWindowAction;
 import net.collabwork.brm.tools.views.actions.ShowPunchManagementWindowAction;
+import net.miginfocom.swing.MigLayout;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import net.miginfocom.swing.MigLayout;
 
 @Component
 // @DependsOn("showPunchManagementWindowAction")
 public class MainViewImpl extends JFrame implements MainView {
 
-    private MainPresenter presenter;
+	private static final Font BOLD = new Font("Tahoma", Font.BOLD, 25);
 
-    private ShowPunchManagementWindowAction showPunchManagementWindowAction;
+	private MainPresenter presenter;
 
-    private SolutionPanel solutionPanel;
+	private ShowPunchManagementWindowAction showPunchManagementWindowAction;
 
-    private DefaultListModel<Solution> historyListModel;
+	private SolutionPanel solutionPanel;
 
-    public MainViewImpl() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(800, 600));
-        center();
+	private DefaultListModel<Solution> historyListModel;
 
-        JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
+	private ShowAboutWindowAction showAboutWindowsAction;
 
-        JMenu computeMenu = new JMenu("Calculs");
-        menuBar.add(computeMenu);
+	private JTextField computeField;
 
-        JMenuItem newComputation = new JMenuItem("Nouveau");
-        computeMenu.add(newComputation);
-        computeMenu.addSeparator();
-        JMenuItem clearHistory = new JMenuItem("Vider historique");
-        computeMenu.add(clearHistory);
+	private NewComputeAction newComputeAction;
 
-        JMenu punchMgmtMenu = new JMenu("Poinçons");
-        menuBar.add(punchMgmtMenu);
+	public MainViewImpl() {
+		setUndecorated(true);
+		getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+		setTitle("BRM-Tools - Calcul poinçonnage");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(new Dimension(800, 600));
+		center();
 
-        showPunchManagementWindowAction = new ShowPunchManagementWindowAction();
-        JMenuItem showPunchMgmt = new JMenuItem(showPunchManagementWindowAction);
-        punchMgmtMenu.add(showPunchMgmt);
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
 
-        historyListModel = new DefaultListModel<>();
-        getContentPane().setLayout(new BorderLayout(0, 0));
+		JMenu computeMenu = new JMenu("Calculs");
+		menuBar.add(computeMenu);
 
-        JPanel contentPane = new JPanel();
-        contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        getContentPane().add(contentPane);
+		newComputeAction = new NewComputeAction();
+		JMenuItem newComputation = new JMenuItem(newComputeAction);
+		computeMenu.add(newComputation);
+		computeMenu.addSeparator();
+		JMenuItem clearHistory = new JMenuItem("Vider historique");
+		computeMenu.add(clearHistory);
 
-        JPanel computePanel = new JPanel();
-        computePanel.setLayout(new BorderLayout());
-        final JTextField txtValue = new JTextField();
-        txtValue.setFont(txtValue.getFont().deriveFont(35));
-        txtValue.setPreferredSize(new Dimension(150, 20));
-        computePanel.add(new JLabel("Calculer:"), BorderLayout.WEST);
-        computePanel.add(txtValue, BorderLayout.CENTER);
-        JButton btnOk = new JButton("ok");
-        btnOk.addActionListener(new AbstractAction() {
+		JMenu punchMgmtMenu = new JMenu("Poinçons");
+		menuBar.add(punchMgmtMenu);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Long value = Long.valueOf(txtValue.getText());
-                presenter.solveFor(value);
-            }
-        });
-        contentPane.setLayout(new MigLayout("", "[350px][350px]", "[][]"));
-        computePanel.add(btnOk, BorderLayout.EAST);
-        contentPane.add(computePanel, "cell 0 0,grow");
+		showPunchManagementWindowAction = new ShowPunchManagementWindowAction();
+		JMenuItem showPunchMgmt = new JMenuItem(showPunchManagementWindowAction);
+		punchMgmtMenu.add(showPunchMgmt);
 
-        solutionPanel = new SolutionPanel();
-        solutionPanel.setPreferredSize(new Dimension(350, 600));
-        contentPane.add(solutionPanel, "cell 1 0 1 2,grow");
-        JList<Solution> history = new JList<Solution>(historyListModel);
-        contentPane.add(history, "cell 0 1,growy");
-        history.setPreferredSize(new Dimension(350, 200));
-        history.addListSelectionListener(new ListSelectionListener() {
+		JMenu aboutMenu = new JMenu("?");
+		menuBar.add(aboutMenu);
 
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Solution solution = null;
+		showAboutWindowsAction = new ShowAboutWindowAction();
+		JMenuItem showAboutWindows = new JMenuItem(showAboutWindowsAction);
+		aboutMenu.add(showAboutWindows);
 
-                if (historyListModel.size() > e.getFirstIndex()) {
-                    solution = historyListModel.get(e.getFirstIndex());
-                }
-                setSolution(solution);
-            }
-        });
-    }
+		historyListModel = new DefaultListModel<>();
+		getContentPane().setLayout(new BorderLayout(0, 0));
 
-    @Autowired
-    public void setPresenter(MainPresenter presenter) {
-        this.presenter = presenter;
-        showPunchManagementWindowAction.setPresenter(presenter);
-    }
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		getContentPane().add(contentPane);
 
-    private void center() {
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
-    }
+		JPanel computePanel = new JPanel();
+		computePanel.setLayout(new BorderLayout());
+		computeField = new JTextField();
+		computeField.setFont(BOLD);
+		computeField.setPreferredSize(new Dimension(150, 20));
+		JLabel lblCompute = new JLabel("Calculer:");
+		lblCompute.setFont(BOLD);
+		computePanel.add(lblCompute, BorderLayout.WEST);
+		computePanel.add(computeField, BorderLayout.CENTER);
+		JButton btnOk = new JButton("ok");
+		btnOk.setFont(BOLD);
+		btnOk.addActionListener(new AbstractAction() {
 
-    @Override
-    public void setSolution(Solution solution) {
-        solutionPanel.setSolution(solution);
-    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Long value = Long.valueOf(computeField.getText());
+				presenter.solveFor(value);
+			}
+		});
+		contentPane.setLayout(new MigLayout("", "[350px][350px]", "[][]"));
+		computePanel.add(btnOk, BorderLayout.EAST);
+		contentPane.add(computePanel, "cell 0 0,grow");
 
-    @Override
-    public void setSolutionHistory(List<Solution> solutions) {
-        historyListModel.clear();
-        for (Solution s : solutions) {
-            historyListModel.addElement(s);
-        }
-    }
+		solutionPanel = new SolutionPanel();
+		solutionPanel.setPreferredSize(new Dimension(350, 600));
+		contentPane.add(solutionPanel, "cell 1 0 1 2,grow");
+		JList<Solution> history = new JList<Solution>(historyListModel);
+		history.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		contentPane.add(history, "cell 0 1,growy");
+		history.setPreferredSize(new Dimension(350, 200));
+		history.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				System.out.println(e);
+				if (!e.getValueIsAdjusting()) {
+					Solution solution = null;
+					System.out.println(e.getFirstIndex());
+					if (historyListModel.size() > e.getLastIndex()) {
+						solution = historyListModel.get(e.getLastIndex());
+					}
+					setSolution(solution);
+				}
+			}
+		});
+	}
+
+	@Autowired
+	public void setPresenter(MainPresenter presenter) {
+		this.presenter = presenter;
+		showPunchManagementWindowAction.setPresenter(presenter);
+		showAboutWindowsAction.setPresenter(presenter);
+		newComputeAction.setPresenter(presenter);
+	}
+
+	private void center() {
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+	}
+
+	@Override
+	public void setSolution(Solution solution) {
+		solutionPanel.setSolution(solution);
+	}
+
+	@Override
+	public void setSolutionHistory(List<Solution> solutions) {
+		historyListModel.clear();
+		for (Solution s : solutions) {
+			historyListModel.addElement(s);
+		}
+	}
+
+	@Override
+	public void clearComputeField() {
+		computeField.setText("");
+	}
+
+	@Override
+	public void focusComputeField() {
+		computeField.requestFocus();
+	}
 
 }

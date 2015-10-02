@@ -47,9 +47,9 @@ public class MainModelImpl implements MainModel {
 	@Override
 	public void solveFor(Long value) {
 		Solution solution = solverService.solveFor(value);
-		if (currentSolution != null) {
-			solutions.push(currentSolution);
-		}
+
+		solutions.push(solution);
+
 		currentSolution = solution;
 		changeSupport.firePropertyChange("solution", null, currentSolution);
 	}
