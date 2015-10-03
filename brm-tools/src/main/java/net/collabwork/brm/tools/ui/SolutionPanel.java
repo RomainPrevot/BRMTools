@@ -47,11 +47,13 @@ public class SolutionPanel extends JPanel {
 			String title = "Composition pour " + solution.getObjective();
 			if (solution.isPartial()) {
 				title += " Partiel";
+			} else {
+			    title += " Complet";
 			}
 			titleLabel.setText(title);
 			Map<Punch, Integer> punches = solution.getPunches();
 			for (Punch p : punches.keySet()) {
-				listModel.addElement(String.format("%s x %s", punches.get(p), p.getName()));
+				listModel.addElement(String.format("%s x %s (%s)", punches.get(p), p.getSize(), p.getName()));
 			}
 		}
 	}

@@ -1,10 +1,13 @@
 package net.collabwork.brm.tools.views;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -34,6 +37,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.swing.JScrollPane;
 
 @Component
 // @DependsOn("showPunchManagementWindowAction")
@@ -95,7 +100,7 @@ public class MainViewImpl extends JFrame implements MainView {
 
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		getContentPane().add(contentPane);
+		getContentPane().add(contentPane, BorderLayout.CENTER);
 
 		JPanel computePanel = new JPanel();
 		computePanel.setLayout(new BorderLayout());
@@ -108,34 +113,38 @@ public class MainViewImpl extends JFrame implements MainView {
 		computePanel.add(computeField, BorderLayout.CENTER);
 		JButton btnOk = new JButton("ok");
 		btnOk.setFont(BOLD);
-		btnOk.addActionListener(new AbstractAction() {
+		javax.swing.Action action = new AbstractAction() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Long value = Long.valueOf(computeField.getText());
-				presenter.solveFor(value);
-			}
-		});
-		contentPane.setLayout(new MigLayout("", "[350px][350px]", "[][]"));
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Long value = Long.valueOf(computeField.getText());
+                presenter.solveFor(value);
+            }
+        };
+		btnOk.addActionListener(action);
+		computeField.addActionListener(action);
+		
+		contentPane.setLayout(new MigLayout("", "[350px,grow][350px]", "[][]"));
 		computePanel.add(btnOk, BorderLayout.EAST);
 		contentPane.add(computePanel, "cell 0 0,grow");
 
 		solutionPanel = new SolutionPanel();
 		solutionPanel.setPreferredSize(new Dimension(350, 600));
 		contentPane.add(solutionPanel, "cell 1 0 1 2,grow");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		contentPane.add(scrollPane, "cell 0 1,grow");
 		JList<Solution> history = new JList<Solution>(historyListModel);
+		scrollPane.setViewportView(history);
 		history.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentPane.add(history, "cell 0 1,growy");
 		history.setPreferredSize(new Dimension(350, 200));
 		history.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				System.out.println(e);
-				if (!e.getValueIsAdjusting()) {
+				if (e.getValueIsAdjusting()) {
 					Solution solution = null;
-					System.out.println(e.getFirstIndex());
-					if (historyListModel.size() > e.getLastIndex()) {
-						solution = historyListModel.get(e.getLastIndex());
+					if (e.getSource() instanceof JList<?>){
+					    solution = (Solution)((JList<?>)e.getSource()).getSelectedValue();
 					}
 					setSolution(solution);
 				}
