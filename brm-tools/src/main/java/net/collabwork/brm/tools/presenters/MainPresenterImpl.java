@@ -2,8 +2,6 @@ package net.collabwork.brm.tools.presenters;
 
 import java.beans.PropertyChangeEvent;
 
-import javax.swing.JOptionPane;
-
 import net.collabwork.brm.tools.models.MainModel;
 import net.collabwork.brm.tools.views.MainView;
 
@@ -16,10 +14,14 @@ public class MainPresenterImpl implements MainPresenter {
 	@Autowired
 	private MainView view;
 
-	private MainModel model;
-
 	@Autowired
 	private PunchManagementPresenter punchPresenter;
+
+	@Autowired
+	private AboutPresenter aboutPresenter;
+
+	// Autowired see #setModel
+	private MainModel model;
 
 	@Autowired
 	public void setModel(MainModel model) {
@@ -56,7 +58,7 @@ public class MainPresenterImpl implements MainPresenter {
 
 	@Override
 	public void showAboutWindow() {
-		JOptionPane.showMessageDialog(null, "Hello World");
+		aboutPresenter.display(true);
 	}
 
 	@Override

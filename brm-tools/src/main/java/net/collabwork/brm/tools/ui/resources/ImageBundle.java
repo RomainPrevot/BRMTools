@@ -26,4 +26,8 @@ public class ImageBundle {
 	public static ImageIcon punchManagementIcon() {
 		return new ImageIcon(ImageBundle.class.getResource("cog_go.png"));
 	}
+
+	public static ImageIcon ghostIcon() {
+		return new ImageIcon(ImageBundle.class.getResource("Ghost.png"));
+	}
 }
